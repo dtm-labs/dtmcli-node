@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "outDir": "dist",
+    "sourceMap": false,
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "declaration": true,
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "removeComments": false,
+    "lib": ["ESNext"]
+  }
+}

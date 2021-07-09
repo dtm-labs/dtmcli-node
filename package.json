@@ -1,0 +1,19 @@
+{
+  "name": "@yang2017/a-cli",
+  "version": "0.0.1",
+  "description": "A cli demo.",
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "git@github.com:jinwuu/a-cli.git",
+  "author": "今吾",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "yarn build"
+  },
+  "devDependencies": {
+    "@types/node": "^16.3.0",
+    "typescript": "^4.3.5"
+  }
+}
