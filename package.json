@@ -1,12 +1,12 @@
 {
-  "name": "@yang2017/a-cli",
-  "version": "0.0.2",
-  "description": "A cli demo.",
+  "name": "dtmcli",
+  "version": "0.0.1",
+  "description": "client sdk for distributed transaction framework dtm",
   "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "git@github.com:jinwuu/a-cli.git",
-  "author": "今吾",
+  "repository": "git@github.com:yedf/dtmcli-node.git",
+  "author": "yedf",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
