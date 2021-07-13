@@ -1,1 +1,2 @@
-export * from './init'
+export * from './id'
+export * from './tcc'
