@@ -15,6 +15,7 @@ export class IdGenerator {
   }
   constructor(parentId = "") {
     this.parentId = parentId
+    this.branchId = 0
   }
 }
 

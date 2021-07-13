@@ -8,6 +8,7 @@ export class Tcc {
   constructor(dtmUrl: string, gid: string) {
     this.dtm = dtmUrl
     this.gid = gid
+    this.IdGen = new IdGenerator()
   }
   async callBranch(body: any, tryUrl: string, confirmUrl: string, cancelUrl: string): Promise<AxiosResponse> {
     let branchId = this.IdGen.newBranchId()
@@ -47,6 +48,7 @@ export async function tccGlobalTransaction(dtmUrl: string, cb: TccCallback): Pro
     await cb(tcc)
     await axios.post(tcc.dtm + "/submit", tbody)
   } catch (e) {
+    console.error(e)
     await axios.post(tcc.dtm + "/abort", tbody)
     return ""
   }
