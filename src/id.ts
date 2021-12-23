@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { DTMError } from './error'
 
 export class IdGenerator {
   parentId: string
@@ -27,6 +28,6 @@ export async function genGid(dtmUrl: string): Promise<string> {
 
 export function checkStatus(status: number) {
   if (status !== 200) {
-    throw "bad http response status: " + status
+    throw new DTMError("bad http response status: " + status)
   }
 }

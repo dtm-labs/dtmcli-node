@@ -41,7 +41,7 @@ DTM是一款跨语言的开源分布式事务管理器，优雅的解决了幂�
 
 ## typescript使用
 
-```
+```ts
 import * as dtmcli from "dtmcli"
 
 async function FireTcc() {
@@ -55,11 +55,38 @@ async function FireTcc() {
     await t.callBranch(req, svc + "/TransInTry", svc + "/TransInConfirm", svc + "/TransInCancel")
   })
 }
+
+async function FireSaga() {
+  let dtm = "http://localhost:36789/api/dtmsvr" // dtm服务地址
+  let svc = "http://localhost:4005/api" // 本地服务前缀
+  let req = { amount: 30 } // 子事务需要的负荷
+  const saga = new dtmcli.Saga(dtm, await dtmcli.mustGenGid(dtm))
+  saga.add(svc+'/TransOut', svc+'/TransOutCompensate', req)
+  saga.add(svc+'/TransIn', svc+'/TransInCompensate', req)
+
+  await saga.submit()
+}
+
+async function FireSagaConcurrent() {
+  let dtm = "http://localhost:36789/api/dtmsvr" // dtm服务地址
+  let svc = "http://localhost:4005/api" // 本地服务前缀
+  let req = { amount: 30 } // 子事务需要的负荷
+  const saga = new dtmcli.Saga(dtm, await dtmcli.mustGenGid(dtm))
+
+  saga.add(svc+'/TransOut', svc+'/TransOutCompensate', req)
+  saga.add(svc+'/TransOut', svc+'/TransOutCompensate', req)
+  saga.add(svc+'/TransIn', svc+'/TransInCompensate', req)
+  saga.add(svc+'/TransIn', svc+'/TransInCompensate', req)
+  saga.addBranchOrder(2, [0, 1]).addBranchOrder(3, [0, 1])
+  saga.enableConcurrent()
+
+  await saga.submit()
+}
 ```
 
 ## javascript使用
 
-```
+```js
 const dtmcli = require("dtmcli")
 
 async function FireTcc() {
