@@ -55,6 +55,24 @@ async function FireTcc() {
     await t.callBranch(req, svc + "/TransInTry", svc + "/TransInConfirm", svc + "/TransInCancel")
   })
 }
+
+async function FireSaga() {
+  let dtm = "http://localhost:36789/api/dtmsvr" // dtm服务地址
+  let svc = "http://localhost:4005/api" // 本地服务前缀
+  let req = { amount: 30 } // 子事务需要的负荷
+  const saga = new dtmcli.Saga(dtm, await dtmcli.mustGenGid(dtm))
+  saga.add(svc+'/TransOut', svc+'/TransOut', req)
+  saga.add(svc+'/TransIn', svc+'/TransInCompensate', req)
+
+  // saga.add(svc+'/TransOut', svc+'/TransOutCompensate', req)
+  // saga.add(svc+'/TransOut', svc+'/TransOutCompensate', req)
+  // saga.add(svc+'/TransIn', svc+'/TransInCompensate', req)
+  // saga.add(svc+'/TransIn', svc+'/TransInCompensate', req)
+  // saga.addBranchOrder(2, [0, 1]).addBranchOrder(3, [0, 1])
+  // saga.enableConcurrent()
+
+  await saga.submit()
+}
 ```
 
 ## javascript使用
