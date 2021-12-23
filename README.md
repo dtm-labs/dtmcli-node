@@ -41,7 +41,7 @@ DTM是一款跨语言的开源分布式事务管理器，优雅的解决了幂�
 
 ## typescript使用
 
-```
+```ts
 import * as dtmcli from "dtmcli"
 
 async function FireTcc() {
@@ -77,7 +77,7 @@ async function FireSaga() {
 
 ## javascript使用
 
-```
+```js
 const dtmcli = require("dtmcli")
 
 async function FireTcc() {
