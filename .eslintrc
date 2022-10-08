@@ -10,6 +10,6 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
-    "semi": "warn"
+    "semi": "off"
   }
 }

@@ -1,16 +1,16 @@
-import { Sequelize, Optional, ModelDefined, DataTypes, Model } from 'sequelize';
+import { Sequelize, Optional, ModelDefined, DataTypes, Model } from 'sequelize'
 interface BarrierAttributes {
-  id: string;
-  transType: string;
-  gid: string;
-  branchId: string;
-  op: string;
-  barrierId: string;
-  reason: string;
+  id: string
+  transType: string
+  gid: string
+  branchId: string
+  op: string
+  barrierId: string
+  reason: string
 }
-type BarrierCreationAttributes = Optional<BarrierAttributes, 'id'>;
+type BarrierCreationAttributes = Optional<BarrierAttributes, 'id'>
 
-export let Barrier: ModelDefined<BarrierAttributes, BarrierCreationAttributes>;
+export let Barrier: ModelDefined<BarrierAttributes, BarrierCreationAttributes>
 
 export function initModel(sequelize: Sequelize, tableName = 'barrier'): void {
   Barrier = sequelize.define<Model<BarrierAttributes, BarrierCreationAttributes>>('barrier', {
@@ -42,6 +42,6 @@ export function initModel(sequelize: Sequelize, tableName = 'barrier'): void {
     underscored: true,
     createdAt: 'create_time',
     updatedAt: 'update_time',
-  });
+  })
 }
 

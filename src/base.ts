@@ -1,92 +1,92 @@
-import 'reflect-metadata';
-import { jsonObject, jsonMember, jsonArrayMember, toJson } from 'typedjson';
+import 'reflect-metadata'
+import { jsonObject, jsonMember, jsonArrayMember, toJson } from 'typedjson'
 
 export class BranchIdGen {
-  branchId = '';
-  subBranchId = 0;
+  branchId = ''
+  subBranchId = 0
 
   constructor(branchId: string) {
-    this.branchId = branchId;
+    this.branchId = branchId
   }
 
   newBranchId(): string {
     if (this.subBranchId >= 99) {
-      throw new Error('branch id is larger than 99');
+      throw new Error('branch id is larger than 99')
     }
     if (this.branchId?.length >= 20) {
-      throw new Error('branch id length is longer than 20');
+      throw new Error('branch id length is longer than 20')
     }
 
-    this.subBranchId += 1;
-    return this.currentSubBranchId();
+    this.subBranchId += 1
+    return this.currentSubBranchId()
   }
 
   currentSubBranchId(): string {
-    return `${this.branchId}${this.getSubIdStr()}`;
+    return `${this.branchId}${this.getSubIdStr()}`
   }
 
   getSubIdStr(): string {
     if (this.subBranchId < 10) {
-      return `0${this.subBranchId}`;
+      return `0${this.subBranchId}`
     }
-    return this.subBranchId.toString();
+    return this.subBranchId.toString()
   }
 }
 
 @jsonObject
 export class TransOptions {
   @jsonMember({ name: 'wait_result', constructor: Boolean })
-  waitResult: boolean;
+  waitResult: boolean
   @jsonMember({ name: 'timeout_to_fail', constructor: Number })
-  timeoutToFail: number;
+  timeoutToFail: number
   @jsonMember({ name: 'request_timeout', constructor: Number })
-  requestTimeout: number;
+  requestTimeout: number
   @jsonMember({ name: 'retry_interval', constructor: Number })
-  retryInterval: number;
+  retryInterval: number
   @jsonMember({ name: 'branch_headers', constructor: Object })
-  branchHeaders: Record<string, string>;
+  branchHeaders: Record<string, string>
   @jsonMember({ name: 'concurrent', constructor: Boolean })
-  concurrent: boolean;
+  concurrent: boolean
   @jsonMember({ name: 'retry_limit', constructor: Number })
-  retryLimit: number;
+  retryLimit: number
   @jsonMember({ name: 'retry_count', constructor: Number })
-  retryCount: number;
+  retryCount: number
 }
 
-type TransType = 'saga' | 'tcc' | 'msg' | 'xa';
+type TransType = 'saga' | 'tcc' | 'msg' | 'xa'
 
 @jsonObject
 @toJson
 export class TransBase extends TransOptions {
   @jsonMember(String)
-  gid: string;
+  gid: string
   @jsonMember({ name: 'trans_type', constructor: String })
-  transType: TransType;
-  dtm: string;
+  transType: TransType
+  dtm: string
   @jsonMember({ name: 'custom_data', constructor: String })
-  customData: string;
+  customData: string
   // use in MSG/SAGA
   @jsonArrayMember(Object)
-  steps: Record<string, string>[] = [];
+  steps: Record<string, string>[] = []
   // used in MSG/SAGA
   @jsonArrayMember(String)
-  payloads: string[] = [];
-  op: string;
+  payloads: string[] = []
+  op: string
   // used in MSG
   @jsonMember({ name: 'query_prepared', constructor: String })
-  queryPrepared: string;
+  queryPrepared: string
   @jsonMember(String)
-  protocol: string;
+  protocol: string
   @jsonMember({ name: 'rollback_reason', constructor: String })
-  rollbackReason: string;
+  rollbackReason: string
 
-  branchIdGen: BranchIdGen;
+  branchIdGen: BranchIdGen
 
   constructor(gid: string, transType: TransType, dtm: string, branchId: string) {
-    super();
-    this.branchIdGen = new BranchIdGen(branchId);
-    this.gid = gid;
-    this.transType = transType;
-    this.dtm = dtm;
+    super()
+    this.branchIdGen = new BranchIdGen(branchId)
+    this.gid = gid
+    this.transType = transType
+    this.dtm = dtm
   }
 }

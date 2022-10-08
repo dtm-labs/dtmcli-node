@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from 'axios';
-import { checkStatus } from './id';
+import axios, { AxiosInstance } from 'axios'
+import { checkStatus } from './id'
 
 export interface Step {
   action: string
@@ -15,48 +15,48 @@ export interface Payload {
 }
 
 export class Saga {
-  static transType = 'saga';
-  dtm: string;
-  gid: string;
-  dtmClient: AxiosInstance;
+  static transType = 'saga'
+  dtm: string
+  gid: string
+  dtmClient: AxiosInstance
 
-  private steps: Step[] = [];
-  private payloads: string[] = [];
-  private orders: Record<number, number[]> = {};
-  private concurrent = false;
+  private steps: Step[] = []
+  private payloads: string[] = []
+  private orders: Record<number, number[]> = {}
+  private concurrent = false
 
   constructor(dtmUrl: string, gid: string) {
-    this.dtm = dtmUrl;
-    this.gid = gid;
+    this.dtm = dtmUrl
+    this.gid = gid
     this.dtmClient = axios.create({
       baseURL: dtmUrl
-    });
+    })
   }
 
   add(action: string, compensate: string, postData: unknown) {
     this.steps.push({
       action,
       compensate,
-    });
+    })
 
-    this.payloads.push(JSON.stringify(postData));
-    return this;
+    this.payloads.push(JSON.stringify(postData))
+    return this
   }
 
   addBranchOrder(branch: number, preBranches: number[]) {
-    this.orders[branch] = preBranches;
-    return this;
+    this.orders[branch] = preBranches
+    return this
   }
 
   enableConcurrent() {
-    this.concurrent = true;
-    return this;
+    this.concurrent = true
+    return this
   }
 
   async submit() {
-    const payload = this.buildPayload();
-    const { status } = await this.dtmClient.post('/submit', payload);
-    checkStatus(status);
+    const payload = this.buildPayload()
+    const { status } = await this.dtmClient.post('/submit', payload)
+    checkStatus(status)
   }
 
   buildPayload() {
@@ -65,15 +65,15 @@ export class Saga {
       trans_type: Saga.transType,
       steps: this.steps,
       payloads: this.payloads,
-    };
+    }
 
     if (this.concurrent) {
       payload.custom_data = JSON.stringify({
         concurrent: this.concurrent,
         orders: this.orders,
-      });
+      })
     }
 
-    return payload;
+    return payload
   }
 }
