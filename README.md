@@ -44,6 +44,14 @@ DTM是一款跨语言的开源分布式事务管理器，优雅的解决了幂�
 ```ts
 import * as dtmcli from "dtmcli"
 
+// 使用Msg模式需要先初始化DB model
+async function startup() {
+  const sequelize = await getDB();
+  dtmcli.init({
+    sequelize,
+  });
+}
+
 async function FireTcc() {
   let dtm = "http://localhost:8080/api/dtmsvr"
   let svc = "http://localhost:4005/api/msg/testDtm"
@@ -81,6 +89,25 @@ async function FireSagaConcurrent() {
   saga.enableConcurrent()
 
   await saga.submit()
+}
+
+async function FireMsg() {
+  let req = { amount: 30 } // 子事务需要的负荷
+  const gid = await dtmcli.mustGenGid(dtm)
+  const msg = new dtmcli.Msg(dtm, gid).add(`${svc }/TransOut`, req).add(`${svc }/TransIn`, req)
+  await msg.prepare(`${svc }/query`)
+  await msg.submit()
+}
+
+
+async function FireMsgWithLocalTransaction() {
+  const req = { amount: 30 }
+  const gid = await dtmcli.mustGenGid(dtm)
+  const seuqelize = await getDB()
+  const msg = new dtmcli.Msg(dtm, gid).add(`${svc }/TransIn`, req)
+  await msg.doAndSubmitDB(`${svc }/query`, seuqelize, async (tx) => {
+    await transUserBalance(tx, transOutUid, -req.amount)
+  })
 }
 ```
 

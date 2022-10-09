@@ -33,7 +33,7 @@ export class Saga {
     })
   }
 
-  add(action: string, compensate: string, postData: any) {
+  add(action: string, compensate: string, postData: unknown) {
     this.steps.push({
       action,
       compensate,

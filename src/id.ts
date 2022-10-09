@@ -21,7 +21,7 @@ export class IdGenerator {
 }
 
 export async function genGid(dtmUrl: string): Promise<string> {
-  let { data, status } = await axios.get(dtmUrl + "/newGid")
+  const { data, status } = await axios.get(dtmUrl + "/newGid")
   checkStatus(status)
   return data.gid
 }

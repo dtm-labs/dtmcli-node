@@ -1,4 +1,4 @@
-import type { ParsedUrlQuery } from 'querystring';
+import type { ParsedUrlQuery } from 'querystring'
 import axios, { AxiosResponse, AxiosInstance } from 'axios'
 import { IdGenerator, genGid, checkStatus } from './id'
 import { DTMError } from './error'
@@ -19,8 +19,8 @@ export class Tcc {
   }
 
   async callBranch<T = any>(body: any, tryUrl: string, confirmUrl: string, cancelUrl: string): Promise<AxiosResponse<T>> {
-    let branchId = this.IdGen.newBranchId()
-    let { status } = await this.dtmClient.post("/registerTccBranch", {
+    const branchId = this.IdGen.newBranchId()
+    const { status } = await this.dtmClient.post("/registerTccBranch", {
       "gid": this.gid,
       "branch_id": branchId,
       "trans_type": "tcc",
@@ -45,13 +45,13 @@ export class Tcc {
 export type TccCallback = (tcc: Tcc) => Promise<void>
 
 export async function tccGlobalTransaction(dtmUrl: string, cb: TccCallback): Promise<string> {
-  let tcc = new Tcc(dtmUrl, await genGid(dtmUrl))
-  let tbody = {
+  const tcc = new Tcc(dtmUrl, await genGid(dtmUrl))
+  const tbody = {
     gid: tcc.gid,
     trans_type: "tcc",
   }
   try {
-    let { status } = await tcc.dtmClient.post("/prepare", tbody)
+    const { status } = await tcc.dtmClient.post("/prepare", tbody)
     checkStatus(status)
     await cb(tcc)
     await tcc.dtmClient.post("/submit", tbody)
@@ -67,7 +67,7 @@ export function tccFromReq(dtmUrl: string, gid: string, branchId: string) {
   if (!dtmUrl || !gid || !branchId) {
     throw new DTMError(`bad req info for tcc dtm: ${dtmUrl} gid: ${gid} branchId: ${branchId}`)
   }
-  let tcc = new Tcc(dtmUrl, gid)
+  const tcc = new Tcc(dtmUrl, gid)
   tcc.IdGen = new IdGenerator(branchId)
   return tcc
 }
