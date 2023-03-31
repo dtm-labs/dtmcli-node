@@ -42,13 +42,44 @@ export class Tcc {
   }
 }
 
+export interface Options {
+  waitResult?: boolean;
+  timeoutToFail?: number;
+  retryInterval?: number;
+  branchHeaders?: Map<string, string>;
+  cb: TccCallback;
+}
 export type TccCallback = (tcc: Tcc) => Promise<void>
 
-export async function tccGlobalTransaction(dtmUrl: string, cb: TccCallback): Promise<string> {
+export async function tccGlobalTransaction(
+  dtmUrl: string,
+  options: Options
+): Promise<string>;
+export async function tccGlobalTransaction(
+  dtmUrl: string,
+  options: TccCallback
+): Promise<string>;
+export async function tccGlobalTransaction(
+  dtmUrl: string,
+  options: any
+): Promise<string> {
+  let cb, other;
+  if (typeof options == "object") {
+    cb = options.cb;
+    other = {
+      wait_result: options.waitResult,
+      retry_interval: options.retryInterval,
+      timeout_to_fail: options.timeoutToFail,
+      branch_headers: options.branchHeaders,
+    };
+  } else {
+    cb = options;
+  }
   const tcc = new Tcc(dtmUrl, await genGid(dtmUrl))
   const tbody = {
     gid: tcc.gid,
     trans_type: "tcc",
+    ...other
   }
   try {
     const { status } = await tcc.dtmClient.post("/prepare", tbody)
